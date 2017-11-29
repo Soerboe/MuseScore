@@ -2410,7 +2410,7 @@ void ExportMusicXml::chord(Chord* chord, int staff, const std::vector<Lyrics*>* 
             attr.doAttr(xml, false);
             QString noteTag = QString("note");
 
-            if (preferences.musicxmlExportLayout) {
+            if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT)) {
                   double measureX = getTenthsFromDots(chord->measure()->pagePos().x());
                   double measureY = pageHeight - getTenthsFromDots(chord->measure()->pagePos().y());
                   double noteX = getTenthsFromDots(note->pagePos().x());
@@ -3546,9 +3546,9 @@ void ExportMusicXml::textLine(TextLine const* const tl, int staff, int tick)
             rest += QString(" end-length=\"%1\"").arg(hookHeight * 10);
             }
 
-      if (preferences.musicxmlExportLayout && p.x() != 0)
+      if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT) && p.x() != 0)
             rest += QString(" default-x=\"%1\"").arg(p.x() * 10 / tl->spatium());
-      if (preferences.musicxmlExportLayout && p.y() != 0)
+      if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT) && p.y() != 0)
             rest += QString(" default-y=\"%1\"").arg(p.y() * -10 / tl->spatium());
 
       directionTag(xml, attr, tl);
@@ -4356,8 +4356,8 @@ static void identification(XmlWriter& xml, Score const* const score)
       xml.tagE("supports element=\"beam\" type=\"yes\"");
       // set support for print new-page and new-system to match user preference
       // for MusicxmlExportBreaks::MANUAL support is "no" because "yes" breaks Finale NotePad import
-      if (preferences.musicxmlExportLayout
-          && preferences.musicxmlExportBreaks == MusicxmlExportBreaks::ALL) {
+      if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT)
+          && preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::ALL) {
             xml.tagE("supports element=\"print\" attribute=\"new-page\" type=\"yes\" value=\"yes\"");
             xml.tagE("supports element=\"print\" attribute=\"new-system\" type=\"yes\" value=\"yes\"");
             }
@@ -4511,13 +4511,13 @@ void ExportMusicXml::print(Measure* m, int idx, int staffCount, int staves)
 
             // determine if a new-system or new-page is required
             QString newThing;       // new-[system|page]="yes" or empty
-            if (preferences.musicxmlExportBreaks == MusicxmlExportBreaks::ALL) {
+            if (preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::ALL) {
                   if (currentSystem == NewSystem)
                         newThing = " new-system=\"yes\"";
                   else if (currentSystem == NewPage)
                         newThing = " new-page=\"yes\"";
                   }
-            else if (preferences.musicxmlExportBreaks == MusicxmlExportBreaks::MANUAL) {
+            else if (preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::MANUAL) {
                   if (currentSystem == NewSystem && prevMeasLineBreak)
                         newThing = " new-system=\"yes\"";
                   else if (currentSystem == NewPage && prevMeasPageBreak)
@@ -4526,9 +4526,9 @@ void ExportMusicXml::print(Measure* m, int idx, int staffCount, int staves)
 
             // determine if layout information is required
             bool doLayout = false;
-            if (preferences.musicxmlExportLayout) {
+            if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT)) {
                   if (currentSystem == TopSystem
-                      || (preferences.musicxmlExportBreaks == MusicxmlExportBreaks::ALL && newThing != "")) {
+                      || (preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::ALL && newThing != "")) {
                         doLayout = true;
                         }
                   }
@@ -5051,7 +5051,7 @@ void ExportMusicXml::write(QIODevice* dev)
 
       identification(xml, _score);
 
-      if (preferences.musicxmlExportLayout) {
+      if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT)) {
             defaults(xml, _score, millimeters, tenths);
             credits(xml);
             }
@@ -5098,7 +5098,7 @@ void ExportMusicXml::write(QIODevice* dev)
                         measureTag += QString("\"%1\"").arg(measureNo++);
                   const bool isFirstActualMeasure = (irregularMeasureNo + measureNo + pickupMeasureNo) == 4;
 
-                  if (preferences.musicxmlExportLayout)
+                  if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT))
                         measureTag += QString(" width=\"%1\"").arg(QString::number(m->bbox().width() / DPMM / millimeters * tenths,'f',2));
 #if 0 // MERGE
                   xml.stag(measureTag);

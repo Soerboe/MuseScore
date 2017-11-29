@@ -234,7 +234,7 @@ add_executable ( ${ExecutableName}
       ${resource_file}
       ${INCS}
 
-      recordbutton.h greendotbutton prefsdialog.h
+      recordbutton.h greendotbutton prefsdialog.h prefsdialog.cpp
       scoreview.cpp editharmony.cpp editfiguredbass.cpp events.cpp
       editinstrument.cpp editstyle.cpp
       icons.cpp importbww.cpp
