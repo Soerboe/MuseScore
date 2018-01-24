@@ -5844,9 +5844,9 @@ int main(int argc, char* av[])
       qInstallMessageHandler(mscoreMessageHandler);
 #endif
 
-      qRegisterMetaTypeStreamOperators<SessionStart>("SessionStart");
-      qRegisterMetaTypeStreamOperators<MusicxmlExportBreaks>("MusicxmlExportBreaks");
-      qRegisterMetaTypeStreamOperators<MuseScoreStyleType>("MuseScoreStyleType");
+//      qRegisterMetaTypeStreamOperators<SessionStart>("SessionStart");
+//      qRegisterMetaTypeStreamOperators<MusicxmlExportBreaks>("MusicxmlExportBreaks");
+//      qRegisterMetaTypeStreamOperators<MuseScoreStyleType>("MuseScoreStyleType");
 
       QFile f(":/revision.h");
       f.open(QIODevice::ReadOnly);

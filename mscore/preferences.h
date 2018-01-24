@@ -33,12 +33,14 @@
 #include "globals.h"
 
 namespace Ms {
+Q_NAMESPACE;
 
 extern QString mscoreGlobalShare;
 
 enum class SessionStart : char {
       EMPTY, LAST, NEW, SCORE
       };
+Q_ENUM_NS(SessionStart);
 
 // midi remote control values:
 enum {
@@ -67,11 +69,13 @@ enum class MuseScoreStyleType : char {
       DARK_FUSION = 0,
       LIGHT_FUSION
       };
+Q_ENUM_NS(MuseScoreStyleType);
 
 // MusicXML export break values
 enum class MusicxmlExportBreaks : char {
       ALL, MANUAL, NO
       };
+Q_ENUM_NS(MusicxmlExportBreaks);
 
 //
 // Defines for all preferences
@@ -268,26 +272,26 @@ extern Preferences preferences;
 
 // Stream operators for enum classes
 // enum classes don't play well with QSettings without custom serialization
-template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
-inline QDataStream &operator<<(QDataStream &out, const T &val)
-{
-    return out << static_cast<int>(val);
-}
+//template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
+//inline QDataStream &operator<<(QDataStream &out, const T &val)
+//{
+//    return out << static_cast<int>(val);
+//}
 
-template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
-inline QDataStream &operator>>(QDataStream &in, T &val)
-{
-    int tmp;
-    in >> tmp;
-    val = static_cast<T>(tmp);
-    return in;
-}
+//template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
+//inline QDataStream &operator>>(QDataStream &in, T &val)
+//{
+//    int tmp;
+//    in >> tmp;
+//    val = static_cast<T>(tmp);
+//    return in;
+//}
 
 
 } // namespace Ms
 
-Q_DECLARE_METATYPE(Ms::SessionStart);
-Q_DECLARE_METATYPE(Ms::MusicxmlExportBreaks);
-Q_DECLARE_METATYPE(Ms::MuseScoreStyleType);
+//Q_DECLARE_METATYPE(Ms::SessionStart);
+//Q_DECLARE_METATYPE(Ms::MusicxmlExportBreaks);
+//Q_DECLARE_METATYPE(Ms::MuseScoreStyleType);
 
 #endif
