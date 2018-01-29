@@ -31,16 +31,36 @@
  */
 
 #include "globals.h"
+//#include <QMetaType>
+//#include <QObject>
+
 
 namespace Ms {
-Q_NAMESPACE;
+
+namespace Enums {
+Q_NAMESPACE
+
+enum SessionStart : char {
+      EMPTY, LAST, NEW, SCORE
+      };
+Q_ENUM_NS(SessionStart)
+
+enum class MuseScoreStyleType : char {
+      DARK_FUSION = 0,
+      LIGHT_FUSION
+      };
+Q_ENUM_NS(MuseScoreStyleType)
+
+// MusicXML export break values
+enum class MusicxmlExportBreaks : char {
+      ALL, MANUAL, NO
+      };
+Q_ENUM_NS(MusicxmlExportBreaks)
+
+} // namespace Enums
 
 extern QString mscoreGlobalShare;
 
-enum class SessionStart : char {
-      EMPTY, LAST, NEW, SCORE
-      };
-Q_ENUM_NS(SessionStart);
 
 // midi remote control values:
 enum {
@@ -65,17 +85,6 @@ enum {
       MIDI_REMOTES
       };
 
-enum class MuseScoreStyleType : char {
-      DARK_FUSION = 0,
-      LIGHT_FUSION
-      };
-Q_ENUM_NS(MuseScoreStyleType);
-
-// MusicXML export break values
-enum class MusicxmlExportBreaks : char {
-      ALL, MANUAL, NO
-      };
-Q_ENUM_NS(MusicxmlExportBreaks);
 
 //
 // Defines for all preferences
@@ -198,7 +207,8 @@ class Preference {
 //   Preferences
 //---------------------------------------------------------
 
-class Preferences {
+class Preferences : public QObject {
+      Q_OBJECT
 
       // Map of all preferences and their default values
       // A preference can not be read or set if it is not present in this map
@@ -251,9 +261,9 @@ class Preferences {
        * Some preferences like enums and structs/classes are not easily read using the general set/get methods
        * and therefore require specific getters and/or setters
        */
-      SessionStart sessionStart() const;
-      MusicxmlExportBreaks musicxmlExportBreaks() const;
-      MuseScoreStyleType globalStyle() const;
+      Enums::SessionStart sessionStart() const;
+      Enums::MusicxmlExportBreaks musicxmlExportBreaks() const;
+      Enums::MuseScoreStyleType globalStyle() const;
       bool isThemeDark() const;
 
       template<typename T>
@@ -272,20 +282,28 @@ extern Preferences preferences;
 
 // Stream operators for enum classes
 // enum classes don't play well with QSettings without custom serialization
-//template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
-//inline QDataStream &operator<<(QDataStream &out, const T &val)
-//{
-//    return out << static_cast<int>(val);
-//}
+template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
+inline QDataStream &operator<<(QDataStream &out, const T &val)
+{
+    int index = static_cast<int>(val);
+    QMetaEnum e = QMetaEnum::fromType<T>();
+    return out << e.key(index);
+}
 
-//template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
-//inline QDataStream &operator>>(QDataStream &in, T &val)
-//{
-//    int tmp;
-//    in >> tmp;
-//    val = static_cast<T>(tmp);
-//    return in;
-//}
+template<typename T, typename std::enable_if<std::is_enum<T>::value>::type* = nullptr>
+inline QDataStream &operator>>(QDataStream &in, T &val)
+{
+    QMetaEnum e = QMetaEnum::fromType<T>();
+    bool ok;
+    char* tmp;
+    in >> tmp;
+    int index = e.keyToValue(tmp, &ok);
+    if (ok)
+      val = static_cast<T>(index);
+    else
+      val = static_cast<T>(0);
+    return in;
+}
 
 
 } // namespace Ms

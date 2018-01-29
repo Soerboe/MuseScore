@@ -23,6 +23,7 @@
 #include "preferences.h"
 
 namespace Ms {
+using namespace Enums;
 
 Preferences preferences;
 

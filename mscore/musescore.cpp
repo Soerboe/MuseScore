@@ -2546,7 +2546,7 @@ static void loadScores(const QStringList& argv)
                   mscore->newFile();
             else {
                   switch (preferences.sessionStart()) {
-                        case SessionStart::LAST:
+                        case Enums::SessionStart::LAST:
                               {
                               QSettings settings;
                               int n = settings.value("scores", 0).toInt();
@@ -2562,12 +2562,12 @@ static void loadScores(const QStringList& argv)
                                     }
                               }
                               break;
-                        case SessionStart::EMPTY:
+                        case Enums::SessionStart::EMPTY:
                               break;
-                        case SessionStart::NEW:
+                        case Enums::SessionStart::NEW:
                               mscore->newFile();
                               break;
-                        case SessionStart::SCORE:
+                        case Enums::SessionStart::SCORE:
                               {
                               QString startScore = preferences.getString(PREF_APP_STARTUP_STARTSCORE);
                               MasterScore* score = mscore->readScore(startScore);
@@ -5844,9 +5844,9 @@ int main(int argc, char* av[])
       qInstallMessageHandler(mscoreMessageHandler);
 #endif
 
-//      qRegisterMetaTypeStreamOperators<SessionStart>("SessionStart");
-//      qRegisterMetaTypeStreamOperators<MusicxmlExportBreaks>("MusicxmlExportBreaks");
-//      qRegisterMetaTypeStreamOperators<MuseScoreStyleType>("MuseScoreStyleType");
+      qRegisterMetaTypeStreamOperators<Enums::SessionStart>("Enums::SessionStart");
+      qRegisterMetaTypeStreamOperators<Enums::MusicxmlExportBreaks>("Enums::MusicxmlExportBreaks");
+      qRegisterMetaTypeStreamOperators<Enums::MuseScoreStyleType>("Enums::MuseScoreStyleType");
 
       QFile f(":/revision.h");
       f.open(QIODevice::ReadOnly);
@@ -6340,7 +6340,7 @@ int main(int argc, char* av[])
             //
             // TODO: delete old session backups
             //
-            restoredSession = mscore->restoreSession((preferences.sessionStart() == SessionStart::LAST && (files == 0)));
+            restoredSession = mscore->restoreSession((preferences.sessionStart() == Enums::SessionStart::LAST && (files == 0)));
             if (!restoredSession || files)
                   loadScores(argv);
             }

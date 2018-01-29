@@ -4357,7 +4357,7 @@ static void identification(XmlWriter& xml, Score const* const score)
       // set support for print new-page and new-system to match user preference
       // for MusicxmlExportBreaks::MANUAL support is "no" because "yes" breaks Finale NotePad import
       if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT)
-          && preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::ALL) {
+          && preferences.musicxmlExportBreaks() == Enums::MusicxmlExportBreaks::ALL) {
             xml.tagE("supports element=\"print\" attribute=\"new-page\" type=\"yes\" value=\"yes\"");
             xml.tagE("supports element=\"print\" attribute=\"new-system\" type=\"yes\" value=\"yes\"");
             }
@@ -4511,13 +4511,13 @@ void ExportMusicXml::print(Measure* m, int idx, int staffCount, int staves)
 
             // determine if a new-system or new-page is required
             QString newThing;       // new-[system|page]="yes" or empty
-            if (preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::ALL) {
+            if (preferences.musicxmlExportBreaks() == Enums::MusicxmlExportBreaks::ALL) {
                   if (currentSystem == NewSystem)
                         newThing = " new-system=\"yes\"";
                   else if (currentSystem == NewPage)
                         newThing = " new-page=\"yes\"";
                   }
-            else if (preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::MANUAL) {
+            else if (preferences.musicxmlExportBreaks() == Enums::MusicxmlExportBreaks::MANUAL) {
                   if (currentSystem == NewSystem && prevMeasLineBreak)
                         newThing = " new-system=\"yes\"";
                   else if (currentSystem == NewPage && prevMeasPageBreak)
@@ -4528,7 +4528,7 @@ void ExportMusicXml::print(Measure* m, int idx, int staffCount, int staves)
             bool doLayout = false;
             if (preferences.getBool(PREF_EXPORT_MUSICXML_EXPORTLAYOUT)) {
                   if (currentSystem == TopSystem
-                      || (preferences.musicxmlExportBreaks() == MusicxmlExportBreaks::ALL && newThing != "")) {
+                      || (preferences.musicxmlExportBreaks() == Enums::MusicxmlExportBreaks::ALL && newThing != "")) {
                         doLayout = true;
                         }
                   }
